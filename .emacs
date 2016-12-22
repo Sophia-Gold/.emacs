@@ -1,28 +1,34 @@
 (require 'package)
 (add-to-list 'package-archives
              '("melpa" . "https://melpa.org/packages/"))
-;For important compatibility libraries like cl-lib
-(add-to-list 'package-archives '("gnu" . "http://elpa.gnu.org/packages/"))
+(add-to-list 'package-archives
+	     '("gnu" . "http://elpa.gnu.org/packages/"))
 (package-initialize)
-
-;set correct path (setenv "PATH"
-(setenv "PATH" "/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin")
-(add-to-list 'exec-path "/usr/local/bin")
-
-;Powerline
-(add-to-list 'load-path "~/.emacs.d/vendor/emacs-powerline")
-(require 'powerline)
-
-;Blackboard-theme
-(add-to-list 'custom-theme-load-path "~/.emacs.d/themes/blackboard-theme")
-(load-theme 'blackboard t)
-
-;font
-(set-face-attribute 'default nil :font "DejaVuSansMono")
-(set-frame-font "DejaVuSansMono" nil t)
 
 ;open .emacs on load
 (find-file user-init-file)
+
+;disable audio/alerts
+(setq ring-bell-function 'ignore)
+
+;set correct path (setenv "PATH"
+;; (setenv "PATH" "/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin")
+;; (add-to-list 'exec-path "/usr/local/bin")
+
+;Powerline
+(require 'powerline)
+(powerline-default-theme)
+
+;Blackboard theme
+;; (require 'color-theme)
+;; (color-theme-initialize)
+;; (load-file "~/.emacs.d/themes/color-theme-blackboard.el")
+;; (color-theme-blackboard)
+(load-theme 'lush t)
+
+;font
+(set-face-attribute 'default nil :font "Consolas")
+(set-frame-font "Consolas" nil t)
 
 ;ido mode
 (require 'ido)
@@ -35,11 +41,13 @@
 (setq debug-on-error t)
 
 ;;line numbering
-(require 'nlinum)
-(global-nlinum-mode 1)
+(require 'linum)
+(global-linum-mode 1)
 
 ;mit-scheme eval
 (load-library "xscheme")
+(autoload 'run-scheme "guile" "Run an inferior Scheme" t)
+(setq scheme-program-name "guile")
 
 ;webmode
 (require 'web-mode)
@@ -106,14 +114,14 @@ prompt to 'name>'."
 ;(concat "localhost://" filename)
 
 ;YASnippet
-(add-to-list 'load-path
-              "~/.emacs.d/plugins/yasnippet")
-(require 'yasnippet)
-(yas-global-mode 1)
+;; (add-to-list 'load-path
+;;               "~/.emacs.d/plugins/yasnippet")
+;; (require 'yasnippet)
+;; (yas-global-mode 1)
 
 ;expand region
-(require 'expand-region)
-(global-set-key (kbd "C-=") 'er/expand-region)
+;; (require 'expand-region)
+;; (global-set-key (kbd "C-=") 'er/expand-region)
 
 ;js2-mode
 (add-to-list 'load-path "/path/to/js2-mode/directory")
@@ -153,6 +161,7 @@ prompt to 'name>'."
 (eval-after-load "haskell-cabal"
     '(define-key haskell-cabal-mode-map (kbd "C-c C-c") 'haskell-compile))
 (setq haskell-compile-cabal-build-command "stack build")
+(custom-set-variables '(haskell-process-type 'stack-ghci)) 
 (require 'haskell-interactive-mode)
 (require 'haskell-process)
 (add-hook 'haskell-mode-hook 'interactive-haskell-mode)
@@ -202,19 +211,17 @@ prompt to 'name>'."
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(erc-truncate-mode t)
- '(scheme-program-name "scheme")
+ '(haskell-interactive-types-for-show-ambiguous nil)
+ '(haskell-process-auto-import-loaded-modules t)
+ '(haskell-process-log t)
+ '(haskell-process-suggest-hoogle-imports t)
+ '(haskell-process-suggest-remove-import-lines t)
+ '(haskell-tags-on-save t)
  '(package-archives
    (quote
     (("gnu" . "http://elpa.gnu.org/packages/")
      ("melpa-stable" . "http://stable.melpa.org/packages/"))))
- '(haskell-process-suggest-remove-import-lines t)
- '(haskell-process-auto-import-loaded-modules t)
- '(haskell-process-log t)
- '(haskell-process-type 'cabal-repl)
- '(haskell-tags-on-save t)
- '(haskell-process-suggest-remove-import-lines t)
- '(haskell-process-suggest-hoogle-imports t)
- '(haskell-interactive-types-for-show-ambiguous nil))
+ '(scheme-program-name "scheme"))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
