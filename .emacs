@@ -5,51 +5,57 @@
 	     '("gnu" . "http://elpa.gnu.org/packages/"))
 (package-initialize)
 
-;open .emacs on load
+;; open .emacs on load
 (find-file user-init-file)
 
-;disable audio/alerts
+;; disable audio/alerts
 (setq ring-bell-function 'ignore)
 
-;set correct path (setenv "PATH"
+;; set correct path (setenv "PATH"
 ;; (setenv "PATH" "/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin")
 ;; (add-to-list 'exec-path "/usr/local/bin")
 
-;Powerline
+;; Powerline
 (require 'powerline)
 (powerline-default-theme)
 
-;Blackboard theme
+;; Blackboard theme
 ;; (require 'color-theme)
 ;; (color-theme-initialize)
 ;; (load-file "~/.emacs.d/themes/color-theme-blackboard.el")
 ;; (color-theme-blackboard)
 (load-theme 'lush t)
 
-;font
+;; font
 (set-face-attribute 'default nil :font "Consolas")
 (set-frame-font "Consolas" nil t)
 
-;ido mode
+;; ido mode
 (require 'ido)
 (ido-mode t)
 
-;open new files in same frame
+;; open new files in same frame
 (setq ns-pop-up-frames nil)
 
-;strack trace for debugging
+;; strack trace for debugging
 (setq debug-on-error t)
 
-;;line numbering
+;; line numbering
 (require 'linum)
 (global-linum-mode 1)
 
-;mit-scheme eval
+;; truncate erc buffers to prevent crashes
+(defvar erc-insert-post-hook)
+    (add-hook 'erc-insert-post-hook
+              'erc-truncate-buffer)
+    (setq erc-truncate-buffer-on-save t)
+
+;; mit-scheme eval
 (load-library "xscheme")
 (autoload 'run-scheme "guile" "Run an inferior Scheme" t)
 (setq scheme-program-name "guile")
 
-;webmode
+;; webmode
 (require 'web-mode)
 (add-to-list 'auto-mode-alist '("\\.phtml\\'" . web-mode))
 (add-to-list 'auto-mode-alist '("\\.tpl\\.php\\'" . web-mode))
@@ -84,7 +90,7 @@
   (setq web-mode-enable-comment-keywords t)
   (setq web-mode-enable-heredoc-fontification t)
 
-  ;(set-face-attribute 'web-mode-css-rule-face nil :foreground "Pink3")
+  ;; (set-face-attribute 'web-mode-css-rule-face nil :foreground "Pink3")
 )
 (add-hook 'web-mode-hook 'my-web-mode-hook)
 (define-key web-mode-map (kbd "C-n") 'web-mode-tag-match)
@@ -104,42 +110,42 @@ prompt to 'name>'."
 			(concat "export PS1=\"\033[33m" name "\033[0m:\033[35m\\W\033[0m>\""))))
 (global-set-key (kbd "C-c s") 'new-shell)
 
-;browser preview
+;; browser preview
 (defun open-in-browser()
   (interactive)
   (let ((filename (buffer-file-name)))
     (browse-url (concat "file://" filename))))
 (global-set-key (kbd "C-c p") 'open-in-browser)
-;"npm start"
-;(concat "localhost://" filename)
+;; "npm start"
+;; (concat "localhost://" filename)
 
-;YASnippet
+;; YASnippet
 ;; (add-to-list 'load-path
 ;;               "~/.emacs.d/plugins/yasnippet")
 ;; (require 'yasnippet)
 ;; (yas-global-mode 1)
 
-;expand region
+;; expand region
 ;; (require 'expand-region)
 ;; (global-set-key (kbd "C-=") 'er/expand-region)
 
-;js2-mode
+;; js2-mode
 (add-to-list 'load-path "/path/to/js2-mode/directory")
 (autoload 'js2-mode "js2-mode" nil t)
 (add-to-list 'auto-mode-alist '("\\.js$" . js2-mode))
 
-;slime
+;; slime
 (setq inferior-lisp-program "/opt/sbcl/bin/sbcl")
 (setq slime-contribs '(slime-fancy))
 
-;eshell prompt
+;; eshell prompt
 (setq eshell-prompt-function
   (lambda ()
     (concat
      (eshell/pwd)
      "┣▇▇▇═─ ")))
 
-;js-comint & js2-mode
+;; js-comint & js2-mode
 (require 'package)
 (package-initialize)
 (add-to-list 'package-archives
@@ -155,13 +161,14 @@ prompt to 'name>'."
             (local-set-key (kbd "C-c C-b") 'js-send-buffer-and-go)
             (local-set-key (kbd "C-c l") 'js-load-file-and-go)))
 
-;haskell-mode
+;; haskell-mode
 (eval-after-load "haskell-mode"
     '(define-key haskell-mode-map (kbd "C-c C-c") 'haskell-compile))
 (eval-after-load "haskell-cabal"
     '(define-key haskell-cabal-mode-map (kbd "C-c C-c") 'haskell-compile))
 (setq haskell-compile-cabal-build-command "stack build")
-(custom-set-variables '(haskell-process-type 'stack-ghci)) 
+(custom-set-variables '(haskell-process-type 'stack-ghci))
+(setq haskell-process-args-stack-ghci '("--ghci-options=-ferror-spans"))
 (require 'haskell-interactive-mode)
 (require 'haskell-process)
 (add-hook 'haskell-mode-hook 'interactive-haskell-mode)
@@ -201,8 +208,8 @@ prompt to 'name>'."
   (create-unfocused-frame)
   (delete-window))
 
-;dumb shell coloring
-;(setq ansi-color-map (ansi-color-make-color-map))
+;; dumb shell coloring
+;; (setq ansi-color-map (ansi-color-make-color-map))
 
 (require 'package)
 (custom-set-variables
@@ -221,7 +228,7 @@ prompt to 'name>'."
    (quote
     (("gnu" . "http://elpa.gnu.org/packages/")
      ("melpa-stable" . "http://stable.melpa.org/packages/"))))
- '(scheme-program-name "scheme"))
+ '(scheme-program-name "guile"))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
