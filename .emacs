@@ -61,6 +61,13 @@
     (setq erc-truncate-buffer-on-save t)
 
 ;; xscheme 
+(defun xscheme ()
+      "Loads xscheme and runs a scheme process in the current buffer."
+      (interactive)
+      (load-library "xscheme")
+      (xscheme-start "petite"
+		     (buffer-name)
+                     (buffer-name)))
 (load-library "xscheme")
 (autoload 'run-scheme "petite" "Run an inferior Scheme" t)
 (setq scheme-program-name "petite")
