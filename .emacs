@@ -32,8 +32,8 @@
 (setq debug-on-error t)
 
 ;; line numbering
-(require 'linum)
-(global-linum-mode 1)
+(require 'nlinum)
+(global-nlinum-mode 1)
 
 ;; eshell prompt
 (setq eshell-prompt-function
