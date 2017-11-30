@@ -8,22 +8,39 @@
 ;; open .emacs on load
 (find-file user-init-file)
 
+(require 'exec-path-from-shell)
+(when (memq window-system '(mac ns x))
+  (exec-path-from-shell-initialize))
+
 ;; disable audio/alerts
 (setq ring-bell-function 'ignore)
 
-;; Powerline
+;; disable scroll bars
+(scroll-bar-mode -1)
+
+;; blink cursor different colors
+(blink-cursor-mode 1)
+(defvar blink-cursor-colors (list "#ff0000" "#7fff00"))
+(setq blink-cursor-count 0)
+(defun blink-cursor-timer-function ()
+  (when (not (internal-show-cursor-p))
+    (when (>= blink-cursor-count (length blink-cursor-colors))
+      (setq blink-cursor-count 0))
+    (set-cursor-color (nth blink-cursor-count blink-cursor-colors))
+    (setq blink-cursor-count (+ 1 blink-cursor-count)))
+  (internal-show-cursor nil (not (internal-show-cursor-p))))
+
 (require 'powerline)
 (powerline-default-theme)
 
 (load-theme 'cyberpunk t)
 
-;; font
 (set-face-attribute 'default nil :font "Consolas")
 (set-frame-font "Consolas" nil t)
 
-;; ido mode
 (require 'ido)
 (ido-mode t)
+(setq ido-enable-flex-matching t)
 
 ;; open new files in same frame
 (setq ns-pop-up-frames nil)
@@ -31,9 +48,12 @@
 ;; strack trace for debugging
 (setq debug-on-error t)
 
-;; line numbering
+;; line numbering that doesn't crash emacs
 (require 'nlinum)
 (global-nlinum-mode 1)
+
+;; make terminals less dumb
+(server-start)
 
 ;; eshell prompt
 (setq eshell-prompt-function
@@ -60,7 +80,6 @@
               'erc-truncate-buffer)
     (setq erc-truncate-buffer-on-save t)
 
-;; xscheme 
 (defun xscheme ()
       "Loads xscheme and runs a scheme process in the current buffer."
       (interactive)
@@ -82,14 +101,28 @@
 (add-hook 'scheme-mode-hook 'my-pretty-lambda)
 (global-prettify-symbols-mode 1)
 
-;; haskell-mode
+(require 'rainbow-delimiters)
+(add-hook 'clojure-mode-hook 'rainbow-delimiters-mode)
+(add-hook 'xscheme-hook 'rainbow-delimiters-mode)
+(add-hook 'js2-mode-hook 'rainbow-delimiters-mode)
+(add-hook 'web-mode-hook 'rainbow-delimiters-mode)
+(add-hook 'json-mode-hook 'rainbow-delimiters-mode)
+
+;; vertical lines for nested YAML and JSON
+(set-face-background 'highlight-indentation-face "#e3e3d3")
+(add-hook 'yaml-mode-hook 'highlight-indentation-mode)
+(add-hook 'json-mode-hook 'highlight-indentation-mode)
+
 (require 'haskell-interactive-mode)
 (require 'haskell-process)
 (eval-after-load "haskell-mode"
     '(define-key haskell-mode-map (kbd "C-c C-c") 'haskell-compile))
 (eval-after-load "haskell-cabal"
     '(define-key haskell-cabal-mode-map (kbd "C-c C-c") 'haskell-compile))
-(setq haskell-compile-cabal-build-command "build")
+(setq haskell-compile-cabal-build-command "stack build")
+;; (setq haskell-process-compute-process-log-and-command '(('name . "test")) 'stack-ghci)
+(setq haskell-process-type 'stack-ghci)
+(setq haskell-process-path-stack "/usr/local/bin/stack")
 (add-hook 'haskell-mode-hook 'interactive-haskell-mode)
 (define-key haskell-mode-map (kbd "C-c C-l") 'haskell-process-load-or-reload)
 (define-key haskell-mode-map (kbd "C-`") 'haskell-interactive-bring)
@@ -129,7 +162,6 @@
   (create-unfocused-frame)
   (delete-window))
 
-;; ocaml - tuareg
 (require 'tuareg)
 (setq tuareg-indent-align-with-first-arg nil)
 (add-hook
@@ -159,7 +191,6 @@
 		("_log\\'" . conf-mode))
 	      auto-mode-alist))
 
-;; webmode
 (require 'web-mode)
 (add-to-list 'auto-mode-alist '("\\.phtml\\'" . web-mode))
 (add-to-list 'auto-mode-alist '("\\.tpl\\.php\\'" . web-mode))
@@ -200,19 +231,10 @@
     (browse-url (concat "file://" filename))))
 (global-set-key (kbd "C-c p") 'open-in-browser)
 
-;; js2-mode
-(add-to-list 'load-path "/path/to/js2-mode/directory")
-(autoload 'js2-mode "js2-mode" nil t)
-(add-to-list 'auto-mode-alist '("\\.js$" . js2-mode))
-
-;; js-comint & js2-mode
-(require 'package)
-(package-initialize)
-(add-to-list 'package-archives
-             '("melpa" . "http://melpa.org/packages/"))
-(package-install 'js-comint)
 (require 'js-comint)
 (setq inferior-js-program-command "/usr/local/bin/node")
+
+(require 'js2-mode)
 (add-hook 'js2-mode-hook
           (lambda ()
             (local-set-key (kbd "C-x C-e") 'js-send-last-sexp)
@@ -226,14 +248,10 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(package-archives
-   (quote
-    (("gnu" . "http://elpa.gnu.org/packages/")
-     ("melpa-stable" . "http://stable.melpa.org/packages/"))))
+ '(blink-cursor-mode nil)
  '(custom-safe-themes
    (quote
-    ("0820d191ae80dcadc1802b3499f84c07a09803f2cb90b343678bdb03d225b26b" default)))
- '(scheme-program-name "petite")
+    ("d6922c974e8a78378eacb01414183ce32bc8dbf2de78aabcc6ad8172547cb074" "0820d191ae80dcadc1802b3499f84c07a09803f2cb90b343678bdb03d225b26b" default)))
  '(erc-truncate-mode t)
  '(haskell-interactive-types-for-show-ambiguous nil)
  '(haskell-process-auto-import-loaded-modules t)
@@ -241,7 +259,16 @@
  '(haskell-process-suggest-hoogle-imports t)
  '(haskell-process-suggest-remove-import-lines t)
  '(haskell-process-type (quote ghci))
- '(haskell-tags-on-save t))
+ '(haskell-tags-on-save t)
+ '(org-startup-truncated nil)
+ '(package-archives
+   (quote
+    (("gnu" . "http://elpa.gnu.org/packages/")
+     ("melpa-stable" . "http://stable.melpa.org/packages/"))))
+ '(package-selected-packages
+   (quote
+    (json-mode yaml-mode highlight-indentation rainbow-blocks rainbow-identifiers rainbow-delimiters rainbow-mode groovy-mode idris-mode exec-path-from-shell js2-mode js-comint web-mode tuareg prop-menu powerline nlinum merlin magit lush-theme haskell-mode cyberpunk-theme)))
+ '(scheme-program-name "petite"))
 
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
