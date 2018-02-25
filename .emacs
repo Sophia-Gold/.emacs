@@ -1,16 +1,12 @@
 (require 'package)
-(add-to-list 'package-archives
-             '("melpa" . "https://melpa.org/packages/"))
-(add-to-list 'package-archives
-	     '("gnu" . "http://elpa.gnu.org/packages/"))
 (package-initialize)
 
 ;; open .emacs on load
 (find-file user-init-file)
 
-(require 'exec-path-from-shell)
-(when (memq window-system '(mac ns x))
-  (exec-path-from-shell-initialize))
+;; (require 'exec-path-from-shell)
+;; (when (memq window-system '(mac ns x))
+;;   (exec-path-froms-hell-initialize))
 
 ;; disable audio/alerts
 (setq ring-bell-function 'ignore)
@@ -21,7 +17,7 @@
 ;; blink cursor different colors
 (blink-cursor-mode 1)
 (defvar blink-cursor-colors (list "#ff0000" "#7fff00"))
-(setq blink-cursor-count 0)
+(setq blink-cursor-count 1)
 (defun blink-cursor-timer-function ()
   (when (not (internal-show-cursor-p))
     (when (>= blink-cursor-count (length blink-cursor-colors))
@@ -109,7 +105,7 @@
 (add-hook 'json-mode-hook 'rainbow-delimiters-mode)
 
 ;; vertical lines for nested YAML and JSON
-(set-face-background 'highlight-indentation-face "#e3e3d3")
+;; (set-face-background 'highlight-indentation-face "#e3e3d3")
 (add-hook 'yaml-mode-hook 'highlight-indentation-mode)
 (add-hook 'json-mode-hook 'highlight-indentation-mode)
 
@@ -244,14 +240,11 @@
             (local-set-key (kbd "C-c l") 'js-load-file-and-go)))
 
 (custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
  '(blink-cursor-mode nil)
+ '(custom-enabled-themes (quote (cyberpunk)))
  '(custom-safe-themes
    (quote
-    ("d6922c974e8a78378eacb01414183ce32bc8dbf2de78aabcc6ad8172547cb074" "0820d191ae80dcadc1802b3499f84c07a09803f2cb90b343678bdb03d225b26b" default)))
+    ("dcbe22bc74153257f412183dd14ab9652197f59adf65646e618c2577e7cca34d" "40da996f3246a3e99a2dff2c6b78e65307382f23db161b8316a5440b037eb72c" "d6922c974e8a78378eacb01414183ce32bc8dbf2de78aabcc6ad8172547cb074" "0820d191ae80dcadc1802b3499f84c07a09803f2cb90b343678bdb03d225b26b" default)))
  '(erc-truncate-mode t)
  '(haskell-interactive-types-for-show-ambiguous nil)
  '(haskell-process-auto-import-loaded-modules t)
@@ -262,17 +255,9 @@
  '(haskell-tags-on-save t)
  '(org-startup-truncated nil)
  '(package-archives
-   (quote
-    (("gnu" . "http://elpa.gnu.org/packages/")
-     ("melpa-stable" . "http://stable.melpa.org/packages/"))))
+   '(("melpa" . "https://melpa.org/packages/")
+    ("gnu" . "http://elpa.gnu.org/packages/")))
  '(package-selected-packages
    (quote
     (json-mode yaml-mode highlight-indentation rainbow-blocks rainbow-identifiers rainbow-delimiters rainbow-mode groovy-mode idris-mode exec-path-from-shell js2-mode js-comint web-mode tuareg prop-menu powerline nlinum merlin magit lush-theme haskell-mode cyberpunk-theme)))
  '(scheme-program-name "petite"))
-
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- )
