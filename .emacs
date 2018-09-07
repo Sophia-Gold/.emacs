@@ -14,6 +14,9 @@
 ;; disable scroll bars
 (scroll-bar-mode -1)
 
+;; disable toolbar
+(tool-bar-mode -1)
+
 ;; blink cursor different colors
 (blink-cursor-mode 1)
 (defvar blink-cursor-colors (list "#ff0000" "#7fff00"))
