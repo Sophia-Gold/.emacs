@@ -115,6 +115,10 @@
 (add-hook 'yaml-mode-hook 'highlight-indentation-mode)
 (add-hook 'json-mode-hook 'highlight-indentation-mode)
 
+;; render markdown with pandoc
+(custom-set-variables
+ '(markdown-command "/run/current-system/sw/bin/pandoc"))
+
 (require 'haskell-interactive-mode)
 (require 'haskell-process)
 (eval-after-load "haskell-mode"
